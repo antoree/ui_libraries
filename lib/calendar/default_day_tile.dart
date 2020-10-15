@@ -12,14 +12,15 @@ class CalendarroDayItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isWeekend = DateUtils.isWeekend(date);
-    var textColor = isWeekend ? Colors.grey : const Color(0xff4B5B53);
+    bool isFutureDay = date.difference(DateTime.now()).inDays >= 0 ? true : false;
+    var textColor = isFutureDay ? const Color(0xff4B5B53) : const Color(0xffD8D8D8) ;
     bool isToday = DateUtils.isToday(date);
     calendarroState = Calendarro.of(context);
 
     bool daySelected = calendarroState.isDateSelected(date);
 
     BoxDecoration boxDecoration;
-    if (daySelected) {
+    if (daySelected ) {
       boxDecoration = BoxDecoration(color: const Color(0xff00C081), shape: BoxShape.circle);
     } else if (isToday) {
       boxDecoration = BoxDecoration(
@@ -40,7 +41,7 @@ class CalendarroDayItem extends StatelessWidget {
           shape: BoxShape.circle,
         ),
       );
-    } else if (daySelected) {
+    } else if (daySelected ) {
       dot = Container(
         width: 5,
         height: 5,
@@ -97,10 +98,14 @@ class CalendarroDayItem extends StatelessWidget {
 
   void handleTap() {
     if (onTap != null) {
-      onTap(date);
+      Duration difference = date.difference(DateTime.now());
+      if(difference.inDays >= 0) {
+        onTap(date);
+        calendarroState.setSelectedDate(date);
+        calendarroState.setCurrentDate(date);
+      }
     }
 
-    calendarroState.setSelectedDate(date);
-    calendarroState.setCurrentDate(date);
+
   }
 }
